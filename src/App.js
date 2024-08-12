@@ -1,12 +1,12 @@
 import { Component } from 'react';
 import './App.css';
+import Movies from './components/movies';
 
 class App extends Component {
   render(){
     return (
       <main className='container'>
-        <h1>Hello AAAAAA</h1>
-        <p>This is a simple React application.</p>
+        <Movies />
       </main>
     );
   }
