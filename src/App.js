@@ -1,11 +1,11 @@
-import { Component } from 'react';
-import './App.css';
-import Movies from './components/movies';
+import { Component } from "react";
+import "./App.css";
+import Movies from "./components/movies";
 
 class App extends Component {
-  render(){
+  render() {
     return (
-      <main className='container'>
+      <main className="container mt-4">
         <Movies />
       </main>
     );
