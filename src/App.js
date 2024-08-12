@@ -1,11 +1,15 @@
+import { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <main className='container'>
-      <h1>Hello World</h1>
-    </main>
-  );
+class App extends Component {
+  render(){
+    return (
+      <main className='container'>
+        <h1>Hello AAAAAA</h1>
+        <p>This is a simple React application.</p>
+      </main>
+    );
+  }
 }
 
 export default App;
