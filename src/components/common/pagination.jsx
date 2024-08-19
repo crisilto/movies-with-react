@@ -1,0 +1,36 @@
+import _ from "lodash";
+import React from "react";
+/*
+Props:
+    itemsCount: Total number of items
+    pageSize: Number of items per page
+    currentPage: The current page where the user is
+    onPageChange: A callback function that is called when a page is clicked
+Logic:
+    Calculates pagesCount to determine how many pages are necessary
+    If there is only one page then it wont show the pagination
+    Uses _.range to create an array of pages numbers
+Rendering:
+    Generates a button for each page
+*/
+const Pagination = (props) => {
+  const { itemsCount, pageSize, currentPage, onPageChange } = props;
+
+  const pagesCount = Math.ceil(itemsCount / pageSize);
+  if(pagesCount === 1) return null;
+  const pages = _.range(1, pagesCount + 1); 
+
+  return (
+    <nav>
+      <ul className="pagination">
+        {pages.map((page) => (
+          <li key={page}  className={ page === currentPage ? 'page-item active' : 'page-item'} >
+            <a className="page-link" href="#" onClick={() => onPageChange(page)}>{page}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
+
+export default Pagination;
