@@ -14,19 +14,26 @@ Logic:
 Rendering:
     Generates a button for each page
 */
-const Pagination = (props) => {
-  const { itemsCount, pageSize, currentPage, onPageChange } = props;
-
+const Pagination = ({ itemsCount, pageSize, currentPage, onPageChange }) => {
   const pagesCount = Math.ceil(itemsCount / pageSize);
-  if(pagesCount === 1) return null;
-  const pages = _.range(1, pagesCount + 1); 
+  if (pagesCount === 1) return null;
+  const pages = _.range(1, pagesCount + 1);
 
   return (
     <nav>
       <ul className="pagination">
         {pages.map((page) => (
-          <li key={page}  className={ page === currentPage ? 'page-item active' : 'page-item'} >
-            <a className="page-link" href="#" onClick={() => onPageChange(page)}>{page}</a>
+          <li
+            key={page}
+            className={page === currentPage ? "page-item active" : "page-item"}
+          >
+            <a
+              className="page-link"
+              href="#"
+              onClick={() => onPageChange(page)}
+            >
+              {page}
+            </a>
           </li>
         ))}
       </ul>
@@ -39,6 +46,6 @@ Pagination.propTypes = {
   pageSize: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
-}
+};
 
 export default Pagination;
