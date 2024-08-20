@@ -1,9 +1,39 @@
-body{
+body {
   margin: 0px;
-  padding: 20px 0 0 0;
+  padding: 0px;
   font-family: sans-serif;
 }
 
-.clickable{
+.navbar {
+  padding: 10px 20px;
+  margin-bottom: 60px;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  margin-right: 15px;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  .nav-link {
+    font-size: 0.9rem;
+    margin-right: 10px;
+  }
+}
+
+.content {
+  margin-top: 70px;
+}
+
+.clickable {
   cursor: pointer;
 }
