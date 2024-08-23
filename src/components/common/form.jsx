@@ -1,6 +1,7 @@
 import Joi from "joi-browser";
 import { Component } from "react";
 import Input from "./input";
+import Select from "./select";
 
 class Form extends Component {
   state = {
@@ -16,6 +17,7 @@ class Form extends Component {
     for (let item of error.details) {
       errors[item.path[0]] = item.message;
     }
+
     return errors;
   };
 
@@ -23,6 +25,7 @@ class Form extends Component {
     const obj = { [name]: value };
     const schema = { [name]: this.schema[name] };
     const { error } = Joi.validate(obj, schema);
+
     return error ? error.details[0].message : null;
   };
 
@@ -48,6 +51,7 @@ class Form extends Component {
   };
 
   renderButton(label) {
+
     return (
       <button className="btn btn-primary" disabled={this.validate()}>
         {label}
@@ -55,8 +59,24 @@ class Form extends Component {
     );
   }
 
+  renderSelect(name, label, options) {
+    const { data, errors } = this.state;
+
+    return (
+      <Select
+        name={name}
+        value={data[name]}
+        label={label}
+        options={options}
+        onChange={this.handleChange}
+        error={errors[name]}
+      />
+    )
+  }
+
   renderInput(name, label, type = "text") {
     const { data, errors } = this.state;
+
     return (
       <Input
         type={type}
