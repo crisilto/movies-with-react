@@ -2,6 +2,7 @@ import React from 'react';
 const Search = ({ value, onChange }) => {
     return (
         <input
+            name="query"
             className="form-control my-3"
             type="search"
             placeholder="Search..."

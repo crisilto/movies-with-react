@@ -42,7 +42,7 @@ class Movies extends Component {
   };
 
   handleGenreSelect = (genre) => {
-    this.setState({ selectedGenre: genre, currentPage: 1 });
+    this.setState({ selectedGenre: genre, searchQuery: "", currentPage: 1 });
   };
 
   handleSearch = (query) => {
@@ -66,7 +66,7 @@ class Movies extends Component {
     let filtered = allMovies;
     if (searchQuery) {
       filtered = allMovies.filter(m =>
-        m.title.toLowerCase().includes(searchQuery.toLowerCase())
+        m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
       );
     } else if (selectedGenre && selectedGenre._id) {
       filtered = allMovies.filter(m => m.genre._id === selectedGenre._id);
