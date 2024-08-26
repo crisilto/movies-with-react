@@ -1,93 +1,85 @@
 import Joi from "joi-browser";
-import { Component } from "react";
+import React, { useState } from 'react';
 import Input from "./input";
 import Select from "./select";
 
-class Form extends Component {
-  state = {
-    data: {},
-    errors: {},
-  };
+function useForm(initialData, schema, doSubmit) {
+  const [data, setData] = useState(initialData);
+  const [errors, setErrors] = useState({});
 
-  validate = () => {
+  const validate = () => {
     const options = { abortEarly: false };
-    const { error } = Joi.validate(this.state.data, this.schema, options);
+    const { error } = Joi.validate(data, schema, options);
     if (!error) return null;
+
     const errors = {};
     for (let item of error.details) {
       errors[item.path[0]] = item.message;
     }
-
     return errors;
   };
 
-  validateProperty = ({ name, value }) => {
+  const validateProperty = ({ name, value }) => {
     const obj = { [name]: value };
-    const schema = { [name]: this.schema[name] };
-    const { error } = Joi.validate(obj, schema);
+    const propertySchema = { [name]: schema[name] };
+    const { error } = Joi.validate(obj, propertySchema);
 
     return error ? error.details[0].message : null;
   };
 
-  handleSubmit = (e) => {
+  const handleChange = ({ currentTarget: input }) => {
+    const errorsCopy = { ...errors };
+    const errorMessage = validateProperty(input);
+    if (errorMessage) errorsCopy[input.name] = errorMessage;
+    else delete errorsCopy[input.name];
+
+    const dataCopy = { ...data };
+    dataCopy[input.name] = input.value;
+    setData(dataCopy);
+    setErrors(errorsCopy);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const errors = this.validate();
-    this.setState({ errors: errors || {} });
-    if (errors) return;
+    const errorsCopy = validate();
+    setErrors(errorsCopy || {})
+    if (errorsCopy) return;
 
-    this.doSubmit();
+    doSubmit();
   };
 
-  handleChange = ({ currentTarget: input }) => {
-    const errors = { ...this.state.errors };
-    const errorMessage = this.validateProperty(input);
-    if (errorMessage) errors[input.name] = errorMessage;
-    else delete errors[input.name];
-
-    const data = { ...this.state.data };
-    data[input.name] = input.value;
-    this.setState({ data, errors });
-  };
-
-  renderButton(label) {
-
-    return (
-      <button className="btn btn-primary" disabled={this.validate()}>
+  return {
+    data,
+    errors,
+    handleChange,
+    handleSubmit,
+    renderButton: (label) => (
+      <button className="btn btn-primary" disabled={validate()}>
         {label}
       </button>
-    );
-  }
-
-  renderSelect(name, label, options) {
-    const { data, errors } = this.state;
-
-    return (
+    ),
+    renderSelect: (name, label, options) => (
       <Select
         name={name}
         value={data[name]}
         label={label}
         options={options}
-        onChange={this.handleChange}
+        onChange={handleChange}
         error={errors[name]}
       />
-    )
-  }
-
-  renderInput(name, label, type = "text") {
-    const { data, errors } = this.state;
-
-    return (
+    ),
+    renderInput: (name, label, type = "text") => (
       <Input
         type={type}
         name={name}
         value={data[name]}
         label={label}
-        onChange={this.handleChange}
+        onChange={handleChange}
         error={errors[name]}
       />
-    );
-  }
+    ),
+  };
 }
 
-export default Form;
+export default useForm;
