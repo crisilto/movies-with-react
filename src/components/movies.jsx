@@ -1,13 +1,13 @@
 import _ from "lodash";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getGenres } from "../services/fakeGenreService";
-import { getMovies } from "../services/fakeMovieService";
-import { paginate } from "../utils/pagitane";
+import { deleteMovie, getMovies } from "../services/fakeMovieService";
+import { paginate } from "../utils/paginate";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
+import Search from "./common/search";
 import MoviesTable from "./moviesTable";
-import Search from "./search";
 
 function Movies() {
   const [movies, setMovies] = useState([]);
@@ -20,18 +20,19 @@ function Movies() {
 
   useEffect(() => {
     const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
-    setGenres(genres);
     setMovies(getMovies());
+    setGenres(genres);
   }, []);
 
   const handleDelete = (movie) => {
     const updatedMovies = movies.filter((m) => m._id !== movie._id);
     setMovies(updatedMovies);
+    deleteMovie(movie._id);
   };
 
   const handleLike = (movie) => {
     const updatedMovies = [...movies];
-    const index = movies.indexOf(movie);
+    const index = updatedMovies.indexOf(movie);
     updatedMovies[index] = { ...updatedMovies[index] };
     updatedMovies[index].liked = !updatedMovies[index].liked;
     setMovies(updatedMovies);
@@ -59,21 +60,26 @@ function Movies() {
 
   const getPagedData = () => {
     let filtered = movies;
+  
     if (searchQuery) {
       filtered = movies.filter((m) =>
-        m.title.toLowerCase().includes(searchQuery.toLowerCase())
+        m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
       );
     } else if (selectedGenre && selectedGenre._id) {
       filtered = movies.filter((m) => m.genre._id === selectedGenre._id);
     }
-
-    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+  
+    const sorted = _.orderBy(filtered, [(movie) => {
+      const value = _.get(movie, sortColumn.path);
+      return typeof value === "string" ? value.toLowerCase() : value;
+    }], [sortColumn.order]);
+      
     const paginatedMovies = paginate(sorted, currentPage, pageSize);
-
+  
     return { totalCount: filtered.length, data: paginatedMovies };
   };
-
-  const { totalCount, data: moviesToDisplay } = getPagedData();
+  
+  const { totalCount, data: paginatedMovies } = getPagedData();
 
   return (
     <div className="row">
@@ -87,28 +93,25 @@ function Movies() {
       <div className="col">
         <Link
           to="/movies/new"
-          className="btn btn-primary float-right"
+          className="btn btn-primary"
           style={{ marginBottom: 20 }}
         >
           New Movie
         </Link>
         <p>Showing {totalCount} movies in the database.</p>
-        <Search
-          value={searchQuery}
-          onChange={this.handleSearch}
-        />
+        <Search value={searchQuery} onChange={handleSearch} />
         <MoviesTable
-          movies={movies}
+          movies={paginatedMovies}
           sortColumn={sortColumn}
-          onLike={this.handleLike}
-          onDelete={this.handleDelete}
-          onSort={this.handleSort}
+          onLike={handleLike}
+          onDelete={handleDelete}
+          onSort={handleSort}
         />
         <Pagination
           itemsCount={totalCount}
           pageSize={pageSize}
           currentPage={currentPage}
-          onPageChange={this.handlePageChange}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>

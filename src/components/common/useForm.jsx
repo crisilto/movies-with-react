@@ -1,7 +1,5 @@
 import Joi from "joi-browser";
 import React, { useState } from 'react';
-import Input from "./input";
-import Select from "./select";
 
 function useForm(initialData, schema, doSubmit) {
   const [data, setData] = useState(initialData);
@@ -60,25 +58,38 @@ function useForm(initialData, schema, doSubmit) {
       </button>
     ),
     renderSelect: (name, label, options) => (
-      <Select
-        name={name}
-        value={data[name]}
-        label={label}
-        options={options}
-        onChange={handleChange}
-        error={errors[name]}
-      />
+      <div className="form-group">
+        <label htmlFor={name}>{label}</label>
+        <select
+          name={name}
+          value={data[name]}
+          onChange={handleChange}
+          className="form-control"
+        >
+          <option value="" />
+          {options.map((option) => (
+            <option key={option._id} value={option._id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        {errors[name] && <div className="alert alert-danger">{errors[name]}</div>}
+      </div>
     ),
     renderInput: (name, label, type = "text") => (
-      <Input
-        type={type}
-        name={name}
-        value={data[name]}
-        label={label}
-        onChange={handleChange}
-        error={errors[name]}
-      />
+      <div className="form-group">
+        <label htmlFor={name}>{label}</label>
+        <input
+          type={type}
+          name={name}
+          value={data[name]}
+          onChange={handleChange}
+          className="form-control"
+        />
+        {errors[name] && <div className="alert alert-danger">{errors[name]}</div>}
+      </div>
     ),
+    setData
   };
 }
 
