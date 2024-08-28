@@ -12,4 +12,4 @@ I have been improving the code, refactoring it and bringing it into line with th
 
 
 **Pending improvements.**
-**Deployment:** [Vidly](movies-with-react-phi.vercel.app/)
+**Deployment:** [Vidly](https://movies-with-react-phi.vercel.app/movies)
